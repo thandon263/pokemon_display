@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
 
@@ -19,6 +20,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var tbPokemonNames: UITextField!
     
     var pokemonList: [String] = ["caterpie", "ekans", "pikachu", "clefairy"]
+    var player: AVAudioPlayer!
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -39,13 +41,18 @@ class ViewController: UIViewController {
             for name in pokemonList {
                 if pokemonName == name {
                     lbPokemonName.text = pokemonName
+                    showPokemon(name)
+                    playSound("found")
                     isFound = true
                     break
                 }
             }
             
-            if isFound {
+            if !isFound {
+                showPokemon("")
+                playSound("not_found")
                 lbPokemonName.text = "\(pokemonName!) can't be found"
+                
             }
         }
         else {
@@ -58,6 +65,20 @@ class ViewController: UIViewController {
         }
     }
 
+    func showPokemon(_ name: String) {
+        imagePokemon.image = UIImage(named: name)
+    }
 
+    func playSound(_ sound: String) {
+        let audioPath = Bundle.main.path(forResource: sound, ofType: "wav")!
+        
+        do {
+            try player = AVAudioPlayer(contentsOf: URL(fileURLWithPath: audioPath))
+            player.play()
+        }
+        catch {
+            print("Can't find the audio file")
+        }
+    }
 }
 
